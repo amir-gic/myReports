@@ -2,14 +2,32 @@
 
 {% block content %}
   <table>
-    <!-- Existing table rows -->
+    <thead>
+      <tr>
+        <th>Tasks</th>
+        <th>Start Time</th>  
+      </tr>
+    </thead>
+    <tbody>
+      {% for report in reports %}
+        <tr>
+          <td>{{ report.task.name }}</td>
+          <td>{{ report.time.time }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
   </table>
 
   <form method="post" action="{% url 'save_report' %}">
     {% csrf_token %}
-    <input type="text" name="name" placeholder="Enter name" required>
-    <input type="time" name="datetime" placeholder="Enter date and time" required>
-    <input type="text" name="description" placeholder="Enter description" required>
+    <select name="task" required>
+      {% for task in tasks %}
+        <option value="{{task}}">{{task}}</option>
+      {% endfor %}
+    </select>
+    <!-- <input type="text" name="name" placeholder="Enter name" required> -->
+    <input type="time" name="time" required>
+    <!-- <input type="text" name="description" placeholder="Enter description" required> -->
     <input type="submit" value="Save">
   </form>
 {% endblock %}
