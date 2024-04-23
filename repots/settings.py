@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-peip@gsj60q9ilsz196phyb(1nt7=#c*_i0_y%_d+eb4b35*tf
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.60.192']
+ALLOWED_HOSTS = []
 
 
 # Application definition
