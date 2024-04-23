@@ -1,0 +1,15 @@
+
+
+{% block content %}
+  <table>
+    <!-- Existing table rows -->
+  </table>
+
+  <form method="post" action="{% url 'save_report' %}">
+    {% csrf_token %}
+    <input type="text" name="name" placeholder="Enter name" required>
+    <input type="time" name="datetime" placeholder="Enter date and time" required>
+    <input type="text" name="description" placeholder="Enter description" required>
+    <input type="submit" value="Save">
+  </form>
+{% endblock %}
