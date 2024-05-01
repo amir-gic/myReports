@@ -3,14 +3,17 @@ from .models import Report , Task
 from django import forms
 from django.http import HttpResponse
 from datetime import datetime , date , time
+from .converters import DateTimeRange
 # Create your views here.
 def index(request):
 	tasks = Task.objects.all()
 	names = [t.name for t in tasks]
 	reports = Report.objects.filter(start_time__gte = date.today())
+
+	today = DateTimeRange.today()
 	#reports = Report.objects.all()
 	#return render(request,"index.html")
-	return render(request , "reports.html" , {"tasks":names , "reports":reports})
+	return render(request , "reports.html" , {"tasks":names , "reports":reports , "today":today})
 
 def save(request):
 	post = request.POST.copy()
@@ -33,3 +36,6 @@ class ReportForm(forms.ModelForm):
 	class Meta:
 		model = Report
 		fields = ['task', 'start_time' , 'end_time']
+
+def detail(request , timerange:DateTimeRange):
+	return HttpResponse(timerange.range)
