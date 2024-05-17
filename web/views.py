@@ -9,6 +9,7 @@ def index(request):
 	tasks = Task.objects.all()
 	names = [t.name for t in tasks]
 	reports = Report.objects.filter(start_time__gte = date.today())
+	reports = sorted(reports , key = lambda x : x.start_time)
 
 	today = DateTimeRange.today()
 	#reports = Report.objects.all()
@@ -18,6 +19,8 @@ def index(request):
 def save(request):
 	post = request.POST.copy()
 	post["start_time"] =	datetime.combine(date.today() , datetime.strptime(request.POST["start_time"],"%H:%M").time())
+	if Report.objects.filter(start_time__gte = date.today()).filter(start_time__gte = post["start_time"]).exists():
+		return HttpResponse("error")
 	form = ReportForm(post)
 	if form.is_valid():
 		form.save()
