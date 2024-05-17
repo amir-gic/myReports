@@ -42,3 +42,30 @@ class ReportForm(forms.ModelForm):
 
 def detail(request , timerange:DateTimeRange):
 	return HttpResponse(timerange.range)
+
+def add_task(request):
+	if request.method == "POST":
+		form = TaskForm(request.POST)
+		form.save()
+		return redirect("index")
+	else:
+		return render(request,"add_task.html")
+
+class TaskForm(forms.ModelForm):
+	class Meta:
+		model = Task
+		fields = ['name']
+
+def delete_task(request):
+	if request.method == "POST":
+		Task.objects.filter(pk = request.POST["name"]).delete()
+		return redirect("index")
+	else:
+		tasks = Task.objects.all()
+		names = [t.name for t in tasks]
+		return render(request , "delete_task.html" ,{"tasks":names})
+	
+def delete_reprot(request,pk):
+	Report.objects.get(pk = pk).delete()
+	return redirect("index")
+	

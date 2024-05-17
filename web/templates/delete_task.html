@@ -1,0 +1,9 @@
+<form action="{% url 'delete_task' %}" method="post">
+    {% csrf_token %}
+    <select name="name" >
+        {% for task in tasks %}
+        <option value="{{task}}">{{task}}</option>
+        {% endfor %}
+    </select>
+    <input type="submit"  value="Delete">
+</form>

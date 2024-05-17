@@ -1,5 +1,10 @@
 
+<html>
+  <head>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
+  </head>
+  <body>
 {% block content %}
   <table>
     <thead>
@@ -7,6 +12,7 @@
         <th>Tasks</th>
         <th>Start Time</th>  
         <th>Totall Time</th>
+        <th> </th>
       </tr>
     </thead>
     <tbody>
@@ -15,6 +21,8 @@
           <td>{{ report.task.name }}</td>
           <td>{{ report.start_time.time }}</td>
           <td>{{ report.total_time }}</td>
+          <!-- add delet clomn to this table that delete own row -->
+          <td><a href="{% url 'delete_reprot' pk=report.pk %}">Delete</a></td>
         </tr>
       {% endfor %}
     </tbody>
@@ -22,10 +30,12 @@
 
   <form method="post" action="{% url 'save_report' %}">
     {% csrf_token %}
-    <select name="task" required>
+    <select name="task" id="task-select" required>
       {% for task in tasks %}
         <option value="{{task}}">{{task}}</option>
       {% endfor %}
+      <option value="add" >Add</option>
+      <option value="delete">Delete</option> 
     </select>
     <!-- <input type="text" name="name" placeholder="Enter name" required> -->
     <input type="time" name="start_time" required>
@@ -35,3 +45,18 @@
     <a href="{% url 'detail_view' timerange=today%}">to day</a>
   
 {% endblock %}
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      document.getElementById("task-select").addEventListener("change", function() {
+        var selectedOption = this.options[this.selectedIndex];
+        if (selectedOption.value == 'add') {
+          window.location.href = "{% url 'add_task'  %}";
+        }
+        else if(selectedOption.value == 'delete'){
+          window.location.href = "{% url 'delete_task' %}";
+        }
+      });
+    });
+  </script>
+  </body>
+</html>
