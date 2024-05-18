@@ -66,6 +66,19 @@ def delete_task(request):
 		return render(request , "delete_task.html" ,{"tasks":names})
 	
 def delete_reprot(request,pk):
-	Report.objects.get(pk = pk).delete()
+	selectet = Report.objects.get(pk = pk)
+	if selectet == Report.objects.last():
+		selectet.delete()
+		last = Report.objects.last()
+		if last != None:
+			last.end_time = None
+			last.save()
+	else:
+		selectet.delete()
+		befor = Report.objects.filter(pk__lt = pk).last()
+		after = Report.objects.filter(pk__gt = pk).first()
+		befor.end_time = after.start_time
+		befor.save()
+	Report.objects.last()
 	return redirect("index")
 	
