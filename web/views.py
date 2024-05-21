@@ -2,9 +2,11 @@ from django.shortcuts import render , redirect
 from .models import Report , Task
 from django import forms
 from django.http import HttpResponse
-from datetime import datetime
+from datetime import datetime , timedelta
 from .converters import DateTimeRange
 from django.utils import timezone
+from django.utils.safestring import mark_safe
+import json
 import pytz
 from repots.settings import TIME_ZONE
 # Create your views here.
@@ -46,7 +48,18 @@ class ReportForm(forms.ModelForm):
 		fields = ['task', 'start_time' , 'end_time']
 
 def detail(request , timerange:DateTimeRange):
-	return HttpResponse(timerange.range)
+	if timerange.range == "day":
+		reports =  Report.objects.filter(start_time__date = timerange.make_date())
+		tottal_times = {}
+		for i in Task.objects.all():
+			tottal_times[i] = timedelta(0)
+			for j in reports.filter(task = i):
+				tottal_times[i] = tottal_times[i] + j.total_time()
+		tottal_times = sorted(tottal_times.items() , key = lambda x : x[1] , reverse= True )
+		reports = sorted(reports , key = lambda x : x.start_time)
+		tasks_names = [task[0].name for task in tottal_times]
+		tasks_vals = [task[1].total_seconds() for task in tottal_times]
+		return render(request , "detail.html", {"tasks_data":tottal_times  , 'tasks_names': mark_safe(json.dumps(tasks_names)) , 'tasks_vals': mark_safe(json.dumps(tasks_vals))})
 
 def add_task(request):
 	if request.method == "POST":

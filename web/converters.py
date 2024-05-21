@@ -24,7 +24,7 @@ class DateTimeRange():
     def strptime(cls, date_string: str):
         format , rang = cls.check_value(date_string)
         parsed_date =  datetime.strptime(date_string, format)
-        datetime_rage =  cls(parsed_date.year , parsed_date.month , 1)
+        datetime_rage =  cls(parsed_date.year , parsed_date.month , parsed_date.day)
         datetime_rage.range = rang
         return datetime_rage
     
@@ -41,7 +41,9 @@ class DateTimeRange():
         }
         time = datetime(self.year , self.month , self.day )
         return time.strftime(format_map[self.range])
-    
+    def make_date(self) -> date:
+        time = datetime(self.year , self.month , self.day).date()
+        return time
 class DateConverter:
 
     regex = "\d{4}(-\d{1,2})?(-\d{1,2})?"
