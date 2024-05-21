@@ -2,7 +2,7 @@ from django.shortcuts import render , redirect
 from .models import Report , Task
 from django import forms
 from django.http import HttpResponse
-from datetime import datetime , timedelta
+from datetime import datetime ,date ,timedelta
 from .converters import DateTimeRange
 from django.utils import timezone
 from django.utils.safestring import mark_safe
@@ -13,7 +13,7 @@ from repots.settings import TIME_ZONE
 def index(request):
 	tasks = Task.objects.all()
 	names = [t.name for t in tasks]
-	reports = Report.objects.filter(start_time__gte = timezone.localtime().date())
+	reports = Report.objects.filter(start_time__gte = date.today())
 	reports = sorted(reports , key = lambda x : x.start_time)
 
 	today = DateTimeRange.today()
@@ -23,10 +23,8 @@ def index(request):
 
 def save(request):
 	post = request.POST.copy()
-	today = timezone.localtime().date()
-	combined_time = datetime.combine(today,datetime.strptime(request.POST["start_time"],"%H:%M").time())
-	post["start_time"] = pytz.timezone(TIME_ZONE).localize(combined_time)
-	if Report.objects.filter(start_time__gte = today).filter(start_time__gte = post["start_time"]).exists():
+	post["start_time"] =	datetime.combine(date.today() , datetime.strptime(request.POST["start_time"],"%H:%M").time())
+	if Report.objects.filter(start_time__gte = date.today()).filter(start_time__gte = post["start_time"]).exists():
 		return HttpResponse("error")
 	form = ReportForm(post)
 	if form.is_valid():

@@ -19,7 +19,7 @@
       {% for report in reports %}
         <tr>
           <td>{{ report.task.name }}</td>
-          <td>{% load tz %}{{ report.start_time|localtime|time }}</td>
+          <td>{{ report.start_time.time }}</td>
           <td>{{ report.total_time }}</td>
           <!-- add delet clomn to this table that delete own row -->
           <td><a href="{% url 'delete_reprot' pk=report.pk %}">Delete</a></td>
