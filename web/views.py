@@ -2,29 +2,30 @@ from django.shortcuts import render , redirect
 from .models import Report , Task
 from django import forms
 from django.http import HttpResponse
-from datetime import datetime ,date ,timedelta
+from datetime import datetime ,timedelta
 from .converters import DateTimeRange
-from django.utils import timezone
 from django.utils.safestring import mark_safe
 import json
 import pytz
 from repots.settings import TIME_ZONE
+def today():
+	return (datetime.now(pytz.timezone("Asia/Tehran"))-timedelta(hours=1)).date()
 # Create your views here.
 def index(request):
 	tasks = Task.objects.all()
 	names = [t.name for t in tasks]
-	reports = Report.objects.filter(start_time__gte = date.today())
+	reports = Report.objects.filter(start_time__gte = today() )
 	reports = sorted(reports , key = lambda x : x.start_time)
 
-	today = DateTimeRange.today()
+	timerange = DateTimeRange.today()
 	#reports = Report.objects.all()
 	#return render(request,"index.html")
-	return render(request , "reports.html" , {"tasks":names , "reports":reports , "today":today})
+	return render(request , "reports.html" , {"tasks":names , "reports":reports , "today":timerange})
 
 def save(request):
 	post = request.POST.copy()
-	post["start_time"] =	datetime.combine(date.today() , datetime.strptime(request.POST["start_time"],"%H:%M").time())
-	if Report.objects.filter(start_time__gte = date.today()).filter(start_time__gte = post["start_time"]).exists():
+	post["start_time"] =	datetime.combine(today() , datetime.strptime(request.POST["start_time"],"%H:%M").time())
+	if Report.objects.filter(start_time__gte = today()).filter(start_time__gte = post["start_time"]).exists():
 		return HttpResponse("error")
 	form = ReportForm(post)
 	if form.is_valid():
@@ -95,6 +96,5 @@ def delete_reprot(request,pk):
 		after = Report.objects.filter(pk__gt = pk).first()
 		befor.end_time = after.start_time
 		befor.save()
-	Report.objects.last()
 	return redirect("index")
 	

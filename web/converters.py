@@ -1,4 +1,5 @@
 from datetime import datetime , date
+import pytz
 import re
 from django.core import exceptions
 
@@ -29,7 +30,7 @@ class DateTimeRange():
     
     @classmethod
     def today(cls):
-        d = datetime.now()
+        d = datetime.now(pytz.timezone("Asia/Tehran")).date()
         return cls(d.year , d.month , d.day , range = "day")
     
     def strftime(self) -> str:
