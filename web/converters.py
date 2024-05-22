@@ -1,6 +1,7 @@
 from datetime import datetime , date
 import re
 from django.core import exceptions
+from django.utils import timezone
 
 class DateTimeRange():
     def __init__(self, year, month, day, hour=0, minute=0, second=0, microsecond=0 , range = None):
@@ -29,7 +30,7 @@ class DateTimeRange():
     
     @classmethod
     def today(cls):
-        d = datetime.now()
+        d = timezone.localtime()
         return cls(d.year , d.month , d.day , range = "day")
     
     def strftime(self) -> str:
