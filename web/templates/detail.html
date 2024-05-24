@@ -38,6 +38,25 @@
     </tbody>
   </table>
 
+  <table>
+    <thead>
+      <tr>
+        <th>Tasks</th>
+        <th>Start Time</th>  
+        <th>Totall Time</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for report in reports %}
+        <tr>
+          <td>{{ report.task.name }}</td>
+          <td>{{ report.start_time.time }}</td>
+          <td>{{ report.total_time }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     // Create a chart using Chart.js

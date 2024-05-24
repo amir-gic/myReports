@@ -58,7 +58,7 @@ def detail(request , timerange:DateTimeRange):
 		reports = sorted(reports , key = lambda x : x.start_time)
 		tasks_names = [task[0].name for task in tottal_times]
 		tasks_vals = [task[1].total_seconds() for task in tottal_times]
-		return render(request , "detail.html", {"tasks_data":tottal_times  , 'tasks_names': mark_safe(json.dumps(tasks_names)) , 'tasks_vals': mark_safe(json.dumps(tasks_vals))})
+		return render(request , "detail.html", {"reports":reports, "tasks_data":tottal_times  , 'tasks_names': mark_safe(json.dumps(tasks_names)) , 'tasks_vals': mark_safe(json.dumps(tasks_vals))})
 
 def add_task(request):
 	if request.method == "POST":
